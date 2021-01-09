@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <body>
+    <center>
+       <canvas id="canvasID" style="border:1px solid #d3d3d3;">
+            Your browser does not support the HTML canvas tag.</canvas>
+        <p>Happy New Year!</p>
+        <button type="button" onclick="scaleUp()">+</button>
+        <button type="button" onclick="scaleDown()">-</button>
+        <input type="text" id="res">
+        <script>
+
+            var canvas = document.getElementById("canvasID");
+            var ctx = canvas.getContext("2d");
+            canvas.width = 800;
+            canvas.height = 800;
+            var scale = 50;
+            var timer1 =0;
+             var timer2 =0;
+             var timer3 =0;
+             var timerStar =0;
+            updatePicture();
+            //end of main   
+            
+            
+               function scaleUp() {
+                scale += 10;
+                updatePicture();
+                
+            }
+            function scaleDown() {
+                 
+               scale -= 10;
+                updatePicture();
+            }
+
+            function clearPicture(){
+            clearInterval(timer1);
+            clearInterval(timer2);
+            clearInterval(timer3);
+            clearInterval(timerStar);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            function updatePicture() {
+                clearPicture();
+                drawChristmasTree(canvas.width / 2 + 0, 100, scale);
+                document.getElementById("res").value = scale;
+            }
+
+            
+        function drawChristmasTree(x, y, z /*zoom*/) {
+            
+            var xt=x, yt=y,wt=z, ht=z;
+            drawTriangle(xt, yt , wt, ht);
+           var x1=xt, y1=yt+ht,w1=wt;
+           timer1 = setInterval( function(){drawLampChain(x1, y1, w1, 0.15*z);} , 200);
+              
+         
+         yt = yt+ht; wt=1.5*wt; ht = 1.5*ht;
+        drawTriangle(xt, yt , wt, ht);
+        var x2=xt, y2=yt+ht,w2=wt;
+          timer2 =  setInterval(function(){ drawLampChain(x2, y2, w2, 0.15*z);} , 200);
+           
+            yt = yt+ht; wt=1.5*wt; ht = 1.5*ht;
+            drawTriangle(xt, yt , wt, ht);
+          var x3=xt, y3=yt+ht,w3=wt;
+         timer3 = setInterval(function(){ drawLampChain(x3, y3, w3, 0.15*z);} , 200);
+           
+           drawFoot(x - 0.25*z,yt+ht, 0.50*z, 1.00*z);
+           drawStar(x, y , 5, 0.4*z, 0.2*z);
+           timerStar = setInterval(function(){ drawStar(x, y , 5, 0.3*z, 0.1*z);} , 200);
+          ctx.stroke();
+          }
+          
+            function drawTriangle(x, y, width, height) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + width, y + height);
+                ctx.lineTo(x - width, y + height);
+                ctx.closePath();
+                ctx.fillStyle = "green";
+                ctx.fill();
+                ctx.stroke();
+            }
+ 
+ function getRandomColor() {
+            const colors = ["red", "yellow", "blue","skyblue"];
+            var random = Math.floor(Math.random() * colors.length);
+            return  colors[random];
+} 
+ 
+ 
+ function drawLamp(x, y, r) {
+                ctx.beginPath();
+                ctx.fillStyle = getRandomColor();
+                ctx.moveTo(x + r, y  );
+                ctx.arc(x, y , r, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.closePath();
+                ctx.stroke();
+ }
+ 
+ function drawLampChain(x, y,width,r) {
+                drawLamp(x+width,y+r,r);
+                drawLamp(x  -width,y+r,r);
+                drawLamp(x ,y+r ,r);
+            }
+
+            function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
+                var rot = Math.PI / 2 * 3;
+                var x = cx;
+                var y = cy;
+                var step = Math.PI / spikes;
+
+                ctx.strokeSyle = "#000";
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - outerRadius);
+                for (i = 0; i < spikes; i++) {
+                    x = cx + Math.cos(rot) * outerRadius;
+                    y = cy + Math.sin(rot) * outerRadius;
+                    ctx.lineTo(x, y);
+                    rot += step;
+
+                    x = cx + Math.cos(rot) * innerRadius;
+                    y = cy + Math.sin(rot) * innerRadius;
+                    ctx.lineTo(x, y);
+                    rot += step;
+                }
+                ctx.lineTo(cx, cy - outerRadius);
+                ctx.fillStyle = getRandomColor();
+                ctx.fill();
+               ctx.closePath();
+            ctx.stroke();
+             }
+ 
+ function drawFoot(x, y, width, height) {
+                ctx.beginPath();
+                ctx.rect(x, y, width, height);
+                ctx.fillStyle = 'brown';
+                ctx.fill();
+            }
+ 
+        </script> 
+    </center>
+</body>
+</html>

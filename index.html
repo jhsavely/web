@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Monte Carlo Method</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+    <center>
+        <h2>Monte Chart</h2>
+        <br>
+        <div style="width:50%;"> 
+            <canvas id="myChart"></canvas> 
+        </div>
+        <br>
+        <p id="printResultsField"></p>
+        <br>
+        <a href="http://localhost:8080/MonteWeb/newServlet">show json</a> 
+        <br>
+        <a href="http://localhost:8080/MonteWeb/lineChart.html">plot</a> 
+        <br>
+        <a href="http://localhost:8080/MonteWeb/christmas.html">Christmas</a> 
+        <br>
+        <a href="http://localhost:8080/MonteWeb/interCube.html">cube</a>
+        <br>
+        <a href="http://localhost:8080/MonteWeb/chat.html">chat</a>
+        <script src="js/dist/Chart.min.js"></script>
+        <script>
+            var xmlhttp = new XMLHttpRequest();
+            var data2;
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    var myObj = JSON.parse(this.responseText);
+                    var dataFx = myObj["plot"];
+                    data2 = dataFx;
+                }
+                ;
+            };
+            xmlhttp.open("GET", "http://localhost:8080/MonteWeb/ChartServlet", true);
+            xmlhttp.send();
+            var chartColors = {
+                red: 'rgb(255, 99, 132)',
+                orange: 'rgb(255, 159, 64)',
+                yellow: 'rgb(255, 205, 86)',
+                green: 'rgb(75, 192, 192)',
+                blue: 'rgb(54, 162, 235)',
+                purple: 'rgb(153, 102, 255)',
+                grey: 'rgb(231,233,237)'
+            };
+            var ctx = document.getElementById("myChart").getContext("2d");
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                            label: 'f(x)',
+                            data: data,
+
+                            backgroundColor: chartColors.red
+                        }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                                stacked: true,
+
+                            }]
+                    }
+                }
+            });
+        </script>  
+    </center>
+</body>
+</html>
+
+
