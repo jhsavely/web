@@ -15,34 +15,67 @@ and open the template in the editor.
         <canvas
             id="myCanvas" width="800" height="800" style="border:1px solid #000000;">  
         </canvas>
-       <br>
-        <p id="printResultsField"></p>
+        <br>
+        <div class="slidecontainer">
+            <p>Zoom slider:</p>
+            <input type="range" min="1" max="100" value="50" class="slider" id="zoomRange">
+            <p>Zoom value: <span id="zoomValue"></span></p>
+        </div>
         <br>
         <script>
 //=============================================================        
-            var w, h;
+            var min = 0;
+            var max = 10 * Math.PI;
             var step = 200;
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
-            w = canvas.width;
-            h = canvas.height;
-            ctx.font = "30px Arial";
-            ctx.fillText("Hello Plot", 10, 50);
-            //document.getElementById("printResultsField").innerHTML ;
-           drawGrid(ctx, w, h, step);
-            var xmlhttp = new XMLHttpRequest();
-           xmlhttp.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    var myObj = JSON.parse(this.responseText);
-                    drawPlot(myObj["plot"]);
-                }
-            }
-           xmlhttp.open("GET", "http://192.168.0.106:8080/MonteWeb/ChartServlet", true);
-           xmlhttp.send();
+            var w = canvas.width;
+            var h = canvas.height;
+            var mPlot;
+            updateData();
+
 
 //==============================================================
 
-function drawPlot(plot) {
+
+            function updateData() {
+                ctx.font = "30px Arial";
+                ctx.fillText("Hello Plot", 10, 50);
+                //document.getElementById("printResultsField").innerHTML ;
+                var params = "?dotAmount=" + w + "&min=" + min + "&max=" + max + "";
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        var myObj = JSON.parse(this.responseText);
+                        mPlot = myObj["plot"];
+                        drawPlot(mPlot);
+                    }
+                }
+                xmlhttp.open("GET", "http://192.168.0.106:8080/MonteWeb/ChartServlet" + params, true);
+                xmlhttp.send();
+            }
+
+
+            function drawGrid(ctx, w, h, step) {
+                //ctx.lineWidth = 1;
+                ctx.strokeStyle = 'rgb(252, 3, 103)';//grid color 
+                ctx.beginPath();
+                ctx.lineWidth = 0.5;
+                for (var x = 0; x <= w; x += step) {
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, h);
+                }
+
+                for (var y = 0; y <= h; y += step) {
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(w, y);
+                }
+
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            function drawPlot(plot) {
                 const {width, height} = canvas.getBoundingClientRect();
                 //ctx.clearRect(0, 0, width, height);
                 scaleX = width / (plot.maxX - plot.minX);
@@ -50,51 +83,32 @@ function drawPlot(plot) {
                 points = plot["points"];
                 ctx.beginPath();
                 ctx.moveTo(points[0]["x"] * scaleX, 400 - points[0]["y"] * scaleY);
-                var i;
-                for (i = 0; i < points.length; i++) {
+                ctx.lineWidth = 3;
+                for (let i = 0; i < points.length; i++) {
                     var p = points[i];
                     ctx.lineTo((p["x"] - plot.minX) * scaleX, (plot.maxY - p["y"]) * scaleY);
                 }
-                ctx.closePath();
+                //ctx.closePath();
                 ctx.stroke();
-            }
-
-            
-function drawGrid (ctx, w, h, step) {
-    
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = 'rgb(20, 20, 20)';//color 
-           ctx.beginPath();
-            
-            for (var x = 0; x <= w; x += step) {
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, h);
-                }
-                
-                 for (var y = 0; y <= h; y += step) {
-                  ctx.moveTo(0, y);
-                    ctx.lineTo(w, y);
-                }
-                
-              ctx.closePath();
-              ctx.stroke();
-            }
-            
-            function increase(){
-               ctx.clearRect(0, 0, w, h);
-                step++;
                 drawGrid(ctx, w, h, step);
             }
-            
-            function decrease(){
+
+            function increase() {
+                ctx.clearRect(0, 0, w, h);
+                step++;
+                drawGrid(ctx, w, h, step);
+                drawPlot(mPlot);
+            }
+
+            function decrease() {
                 ctx.clearRect(0, 0, w, h);
                 step--;
-             drawGrid(ctx, w, h, step);
-             }
-            
-        </script>
+                drawGrid(ctx, w, h, step);
+                drawPlot(mPlot);
+            }
+            canvas.addEventListener("wheel",increase);
 
-        <button type="button" onclick="alert('!!! Btn is under construction!!!')">Scale</button>
+        </script>
         <button type="button" onclick="increase()">Grid step +</button>
         <button type="button" onclick="decrease()">Grid step -</button>
     </center>

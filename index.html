@@ -19,20 +19,14 @@ and open the template in the editor.
         </div>
         <br>
         <p id="printResultsField"></p>
+        <a href="http://192.168.0.106:8080/MonteWeb/LineChart.html">Chart</a> 
         <br>
-        <a href="http://localhost:8080/MonteWeb/newServlet">show json</a> 
-        <br>
-        <a href="http://localhost:8080/MonteWeb/lineChart.html">plot</a> 
-        <br>
-        <a href="http://localhost:8080/MonteWeb/christmas.html">Christmas</a> 
-        <br>
-        <a href="http://localhost:8080/MonteWeb/interCube.html">cube</a>
-        <br>
-        <a href="http://localhost:8080/MonteWeb/chat.html">chat</a>
+        <a href="http://192.168.0.106:8080/MonteWeb/ChristmasTree.html">Christmas</a> 
+
         <script src="js/dist/Chart.min.js"></script>
         <script>
+            
             var xmlhttp = new XMLHttpRequest();
-            var data2;
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
                     var myObj = JSON.parse(this.responseText);
@@ -41,7 +35,7 @@ and open the template in the editor.
                 }
                 ;
             };
-            xmlhttp.open("GET", "http://localhost:8080/MonteWeb/ChartServlet", true);
+            xmlhttp.open("GET", "http://192.168.0.106:8080/MonteWeb/ChartServlet", true);
             xmlhttp.send();
             var chartColors = {
                 red: 'rgb(255, 99, 132)',
@@ -58,7 +52,7 @@ and open the template in the editor.
                 data: {
                     datasets: [{
                             label: 'f(x)',
-                            data: data,
+                            data: [10, 20, 30,40,50,60,70,80,90,100 ],
 
                             backgroundColor: chartColors.red
                         }]
@@ -66,8 +60,7 @@ and open the template in the editor.
                 options: {
                     scales: {
                         yAxes: [{
-                                stacked: true,
-
+                                stacked: false
                             }]
                     }
                 }

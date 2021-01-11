@@ -1,13 +1,38 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .slidecontainer {
+                width: 100%;
+            }
+
+            .slider {
+                width: 100%;
+            }
+            #blink {
+                font-size: 30px;
+                font-weight: bold;
+                font-family: sans-serif;
+                color: #1c87c9;
+                transition: 0.4s;
+            }
+        </style>
+    </head>
     <body>
     <center>
-       <canvas id="canvasID"  style="background: url('./img/pexels-free-nature-stock-1564334.jpg'); border:1px solid #d3d3d3;">
-            Your browser does not support the HTML canvas tag.</canvas>
-        <p>Happy New Year!</p>
+        <p id="blink">Happy New Year!</p>
+        <canvas id="canvasID"  style="background: url('./img/pexels-free-nature-stock-1564334.jpg'); border:1px solid #d3d3d3;">
+            Your browser does not support the HTML canvas tag.
+        </canvas>
+        <br>
         <button type="button" onclick="scaleUp()">+</button>
         <button type="button" onclick="scaleDown()">-</button>
-        <input type="text" id="res">
+        <div class="slidecontainer">
+            <p>Zoom slider:</p>
+            <input type="range" min="1" max="100" value="50" class="slider" id="zoomRange">
+            <p>Zoom value: <span id="zoomValue"></span></p>
+        </div>
         <script>
 
             var canvas = document.getElementById("canvasID");
@@ -15,64 +40,87 @@
             canvas.width = 800;
             canvas.height = 800;
             var scale = 50;
-            var timer1 =0;
-             var timer2 =0;
-             var timer3 =0;
-             var timerStar =0;
+            var timer1 = 0;
+            var timer2 = 0;
+            var timer3 = 0;
+            var timerStar = 0;
             updatePicture();
-            //end of main   
-            
-            
-               function scaleUp() {
+            //end of main
+
+            var slider = document.getElementById("zoomRange");
+            var zv = document.getElementById("zoomValue");
+            zv.innerHTML = slider.value;
+            slider.oninput = function () {
+                zv.innerHTML = this.value;
+            }
+
+            var blink = document.getElementById('blink');
+            setInterval(function () {
+                blink.style.opacity = (blink.style.opacity == 0 ? 1 : 0);
+            }, 1000);
+
+            function scaleUp() {
                 scale += 10;
                 updatePicture();
-                
+
             }
             function scaleDown() {
-                 
-               scale -= 10;
+
+                scale -= 10;
                 updatePicture();
             }
 
-            function clearPicture(){
-            clearInterval(timer1);
-            clearInterval(timer2);
-            clearInterval(timer3);
-            clearInterval(timerStar);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            function clearPicture() {
+                clearInterval(timer1);
+                clearInterval(timer2);
+                clearInterval(timer3);
+                clearInterval(timerStar);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
-            
+
             function updatePicture() {
                 clearPicture();
                 drawChristmasTree(canvas.width / 2 + 0, 100, scale);
                 document.getElementById("res").value = scale;
             }
 
-            
-        function drawChristmasTree(x, y, z /*zoom*/) {
-            
-            var xt=x, yt=y,wt=z, ht=z;
-            drawTriangle(xt, yt , wt, ht);
-           var x1=xt, y1=yt+ht,w1=wt;
-           timer1 = setInterval( function(){drawLampChain(x1, y1, w1, 0.15*z);} , 200);
-              
-         
-         yt = yt+ht; wt=1.5*wt; ht = 1.5*ht;
-        drawTriangle(xt, yt , wt, ht);
-        var x2=xt, y2=yt+ht,w2=wt;
-          timer2 =  setInterval(function(){ drawLampChain(x2, y2, w2, 0.15*z);} , 200);
-           
-            yt = yt+ht; wt=1.5*wt; ht = 1.5*ht;
-            drawTriangle(xt, yt , wt, ht);
-          var x3=xt, y3=yt+ht,w3=wt;
-         timer3 = setInterval(function(){ drawLampChain(x3, y3, w3, 0.15*z);} , 200);
-           
-           drawFoot(x - 0.25*z,yt+ht, 0.50*z, 1.00*z);
-           drawStar(x, y , 5, 0.4*z, 0.2*z);
-           timerStar = setInterval(function(){ drawStar(x, y , 5, 0.3*z, 0.1*z);} , 200);
-          ctx.stroke();
-          }
-          
+
+            function drawChristmasTree(x, y, z /*zoom*/) {
+
+                var xt = x, yt = y, wt = z, ht = z;
+                drawTriangle(xt, yt, wt, ht);
+                var x1 = xt, y1 = yt + ht, w1 = wt;
+                timer1 = setInterval(function () {
+                    drawLampChain(x1, y1, w1, 0.15 * z);
+                }, 200);
+
+
+                yt = yt + ht;
+                wt = 1.5 * wt;
+                ht = 1.5 * ht;
+                drawTriangle(xt, yt, wt, ht);
+                var x2 = xt, y2 = yt + ht, w2 = wt;
+                timer2 = setInterval(function () {
+                    drawLampChain(x2, y2, w2, 0.15 * z);
+                }, 200);
+
+                yt = yt + ht;
+                wt = 1.5 * wt;
+                ht = 1.5 * ht;
+                drawTriangle(xt, yt, wt, ht);
+                var x3 = xt, y3 = yt + ht, w3 = wt;
+                timer3 = setInterval(function () {
+                    drawLampChain(x3, y3, w3, 0.15 * z);
+                }, 200);
+
+                drawFoot(x - 0.25 * z, yt + ht, 0.50 * z, 1.00 * z);
+                drawStar(x, y, 5, 0.4 * z, 0.2 * z);
+                timerStar = setInterval(function () {
+                    drawStar(x, y, 5, 0.3 * z, 0.1 * z);
+                }, 200);
+                ctx.stroke();
+            }
+
             function drawTriangle(x, y, width, height) {
                 ctx.beginPath();
                 ctx.moveTo(x, y);
@@ -83,28 +131,28 @@
                 ctx.fill();
                 ctx.stroke();
             }
- 
- function getRandomColor() {
-            const colors = ["red", "yellow", "blue","skyblue"];
-            var random = Math.floor(Math.random() * colors.length);
-            return  colors[random];
-} 
- 
- 
- function drawLamp(x, y, r) {
+
+            function getRandomColor() {
+                const colors = ["red", "yellow", "blue", "skyblue"];
+                var random = Math.floor(Math.random() * colors.length);
+                return  colors[random];
+            }
+
+
+            function drawLamp(x, y, r) {
                 ctx.beginPath();
                 ctx.fillStyle = getRandomColor();
-                ctx.moveTo(x + r, y  );
-                ctx.arc(x, y , r, 0, 2 * Math.PI);
+                ctx.moveTo(x + r, y);
+                ctx.arc(x, y, r, 0, 2 * Math.PI);
                 ctx.fill();
                 ctx.closePath();
                 ctx.stroke();
- }
- 
- function drawLampChain(x, y,width,r) {
-                drawLamp(x+width,y+r,r);
-                drawLamp(x  -width,y+r,r);
-                drawLamp(x ,y+r ,r);
+            }
+
+            function drawLampChain(x, y, width, r) {
+                drawLamp(x + width, y + r, r);
+                drawLamp(x - width, y + r, r);
+                drawLamp(x, y + r, r);
             }
 
             function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
@@ -130,17 +178,17 @@
                 ctx.lineTo(cx, cy - outerRadius);
                 ctx.fillStyle = getRandomColor();
                 ctx.fill();
-               ctx.closePath();
-            ctx.stroke();
-             }
- 
- function drawFoot(x, y, width, height) {
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            function drawFoot(x, y, width, height) {
                 ctx.beginPath();
                 ctx.rect(x, y, width, height);
                 ctx.fillStyle = 'brown';
                 ctx.fill();
             }
- 
+
         </script> 
     </center>
 </body>
