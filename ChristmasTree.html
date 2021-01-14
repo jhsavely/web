@@ -26,12 +26,9 @@
             Your browser does not support the HTML canvas tag.
         </canvas>
         <br>
-        <button type="button" onclick="scaleUp()">+</button>
-        <button type="button" onclick="scaleDown()">-</button>
         <div class="slidecontainer">
-            <p>Zoom slider:</p>
-            <input type="range" min="1" max="100" value="50" class="slider" id="zoomRange">
-            <p>Zoom value: <span id="zoomValue"></span></p>
+            <p>Zoom:<span id="zoomValue"></span></p>
+            <input type="range" min="-100" max="100" value="50" class="slider" id="zoomRange">
         </div>
         <script>
 
@@ -44,32 +41,26 @@
             var timer2 = 0;
             var timer3 = 0;
             var timerStar = 0;
-            updatePicture();
-            //end of main
-
             var slider = document.getElementById("zoomRange");
             var zv = document.getElementById("zoomValue");
-            zv.innerHTML = slider.value;
             slider.oninput = function () {
                 zv.innerHTML = this.value;
+               scale =  parseInt(this.value);
+              updatePicture();
             }
-
-            var blink = document.getElementById('blink');
-            setInterval(function () {
-                blink.style.opacity = (blink.style.opacity == 0 ? 1 : 0);
+          var blink = document.getElementById('blink');
+          
+        setInterval(function () {
+               blink.style.opacity = (blink.style.opacity == 0 ? 1 : 0);
             }, 1000);
+           zv.innerHTML = slider.value;
+           updatePicture();
 
-            function scaleUp() {
-                scale += 10;
-                updatePicture();
-
-            }
-            function scaleDown() {
-
-                scale -= 10;
-                updatePicture();
-            }
-
+             
+// end of main
+ //=================================================           
+ 
+ 
             function clearPicture() {
                 clearInterval(timer1);
                 clearInterval(timer2);
@@ -80,9 +71,8 @@
 
             function updatePicture() {
                 clearPicture();
-                drawChristmasTree(canvas.width / 2 + 0, 100, scale);
-                document.getElementById("res").value = scale;
-            }
+                drawChristmasTree(canvas.width / 2 + 0,  canvas.height/2 - 3*scale, scale);
+             }
 
 
             function drawChristmasTree(x, y, z /*zoom*/) {
@@ -142,8 +132,8 @@
             function drawLamp(x, y, r) {
                 ctx.beginPath();
                 ctx.fillStyle = getRandomColor();
-                ctx.moveTo(x + r, y);
-                ctx.arc(x, y, r, 0, 2 * Math.PI);
+                ctx.moveTo(x +Math.abs(r), y);
+                ctx.arc(x, y, Math.abs(r), 0, 2 * Math.PI);
                 ctx.fill();
                 ctx.closePath();
                 ctx.stroke();
