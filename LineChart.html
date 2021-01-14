@@ -9,17 +9,41 @@ and open the template in the editor.
         <title>Canvas</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .slidecontainer {
+                width: 100%;
+            }
+
+            .slider {
+                width: 100%;
+            }
+            #blink {
+                font-size: 30px;
+                font-weight: bold;
+                font-family: sans-serif;
+                color: #1c87c9;
+                transition: 0.4s;
+            }
+        </style>
+
     </head>
     <body>
     <center>
+        <label for="functions">Choose a function:</label>
+        <select name="functions" id="functions">
+            <option value="sin">Sine</option>
+            <option value="sinh">Hyperbolic sine</option>
+            <option value="cos">Cosine</option>
+            <option value="cosh">Hyperbolic cosine</option>
+        </select> 
         <canvas
             id="myCanvas" width="800" height="800" style="border:1px solid #000000;">  
         </canvas>
         <br>
         <div class="slidecontainer">
-            <p>Zoom slider:</p>
+            <p>         </p>
             <input type="range" min="1" max="100" value="50" class="slider" id="zoomRange">
-            <p>Zoom value: <span id="zoomValue"></span></p>
+            <p id="zoomValue">Zoom value: </p>
         </div>
         <br>
         <script>
@@ -32,11 +56,17 @@ and open the template in the editor.
             var w = canvas.width;
             var h = canvas.height;
             var mPlot;
+            var slider = document.getElementById("zoomRange");
+            var zv = document.getElementById("zoomValue");
+            var blink = document.getElementById('blink');
+            zv.innerHTML = slider.value;
+            slider.oninput = function () {
+                zv.innerHTML = this.value;
+            }
             updateData();
 
 
 //==============================================================
-
 
             function updateData() {
                 ctx.font = "30px Arial";
@@ -54,7 +84,6 @@ and open the template in the editor.
                 xmlhttp.open("GET", "http://192.168.0.106:8080/MonteWeb/ChartServlet" + params, true);
                 xmlhttp.send();
             }
-
 
             function drawGrid(ctx, w, h, step) {
                 //ctx.lineWidth = 1;
@@ -106,11 +135,8 @@ and open the template in the editor.
                 drawGrid(ctx, w, h, step);
                 drawPlot(mPlot);
             }
-            canvas.addEventListener("wheel",increase);
-
+            //canvas.addEventListener("wheel", increase);
         </script>
-        <button type="button" onclick="increase()">Grid step +</button>
-        <button type="button" onclick="decrease()">Grid step -</button>
     </center>
 </body>
 </html>

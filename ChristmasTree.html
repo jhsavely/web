@@ -44,20 +44,23 @@
             var timer2 = 0;
             var timer3 = 0;
             var timerStar = 0;
-            updatePicture();
-            //end of main
-
             var slider = document.getElementById("zoomRange");
             var zv = document.getElementById("zoomValue");
+            var blink = document.getElementById('blink');
             zv.innerHTML = slider.value;
-            slider.oninput = function () {
+                        slider.oninput = function () {
                 zv.innerHTML = this.value;
             }
 
-            var blink = document.getElementById('blink');
             setInterval(function () {
                 blink.style.opacity = (blink.style.opacity == 0 ? 1 : 0);
             }, 1000);
+            updatePicture();
+
+            //===================== end of main ============================
+
+
+
 
             function scaleUp() {
                 scale += 10;
