@@ -31,7 +31,6 @@
             <input type="range" min="-100" max="100" value="50" class="slider" id="zoomRange">
         </div>
         <script>
-
             var canvas = document.getElementById("canvasID");
             var ctx = canvas.getContext("2d");
             canvas.width = 800;
@@ -45,22 +44,18 @@
             var zv = document.getElementById("zoomValue");
             slider.oninput = function () {
                 zv.innerHTML = this.value;
-               scale =  parseInt(this.value);
-              updatePicture();
+                scale = parseInt(this.value);
+                updatePicture();
             }
-          var blink = document.getElementById('blink');
-          
-        setInterval(function () {
-               blink.style.opacity = (blink.style.opacity == 0 ? 1 : 0);
-            }, 1000);
-           zv.innerHTML = slider.value;
-           updatePicture();
+            var blink = document.getElementById('blink');
 
-             
+            setInterval(function () {
+                blink.style.opacity = (blink.style.opacity == 0 ? 1 : 0);
+            }, 1000);
+            zv.innerHTML = slider.value;
+            updatePicture();
 // end of main
- //=================================================           
- 
- 
+            
             function clearPicture() {
                 clearInterval(timer1);
                 clearInterval(timer2);
@@ -71,8 +66,8 @@
 
             function updatePicture() {
                 clearPicture();
-                drawChristmasTree(canvas.width / 2 + 0,  canvas.height/2 - 3*scale, scale);
-             }
+                drawChristmasTree(canvas.width / 2 + 0, canvas.height / 2 - 3 * scale, scale);
+            }
 
 
             function drawChristmasTree(x, y, z /*zoom*/) {
@@ -132,7 +127,7 @@
             function drawLamp(x, y, r) {
                 ctx.beginPath();
                 ctx.fillStyle = getRandomColor();
-                ctx.moveTo(x +Math.abs(r), y);
+                ctx.moveTo(x + Math.abs(r), y);
                 ctx.arc(x, y, Math.abs(r), 0, 2 * Math.PI);
                 ctx.fill();
                 ctx.closePath();
@@ -178,7 +173,6 @@
                 ctx.fillStyle = 'brown';
                 ctx.fill();
             }
-
         </script> 
     </center>
 </body>

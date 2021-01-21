@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <meta charset="UTF-8"/>
+    <head>
+        <style>
+
+        </style>
+    </head>
+    <body>
+    <center>
+        <canvas id="myCanvas"  style="border:1px solid #d3d3d3;">
+            Your browser does not support the HTML5 canvas tag.
+        </canvas>
+    </center>
+    <br>
+    <p id="coordinates"></p>
+    <br>
+    <script>
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        canvas.width = 800;
+        canvas.height = 800;
+        let isDrawing = false;
+        var p1 =0;
+        var p2 =canvas.width;
+        var X1=0;
+        var X2=0;
+        const colors = ["red", "yellow", "blue", "skyblue"];
+        document.getElementById("myCanvas").onmousemove = function (event) {
+            fillInterval(event);
+        };
+        document.getElementById("myCanvas").addEventListener('mousedown', (event) => {
+            console.log('mousedown');
+            mousePressed(event);
+        });
+        document.getElementById("myCanvas").addEventListener('mouseup', (event) => {
+            console.log('mouseup');
+            mouseReleased(event);
+        });
+//============================ 
+        function mousePressed(event) {
+            p1 = event.offsetX;
+            isDrawing = true;
+            X1 = linearFX(p1);
+           var coor = "Coordinates: ( p1 = " + p1 + " X1 = "+X1+ ")";
+           document.getElementById("coordinates").innerHTML = coor;
+        }
+        
+        function mouseReleased(event) {
+            var p2 = event.offsetX;
+            isDrawing = false;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //TODO: re-call the servlet data and repainting the plot
+            X2 = linearFX(p2);
+            var coor = "Coordinates: ( p1 = " + p1 + " X1 = "+ X1 + " p2 = " + p2 + " X2 = "+X2+ ")";
+            document.getElementById("coordinates").innerHTML = coor;
+        }
+        
+        function fillInterval(event) {
+           
+            if(!isDrawing) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.globalAlpha = 0.2;
+            ctx.fillStyle = "green";
+            ctx.fillRect(p1, 0, event.offsetX - p1, canvas.height);
+            //ctx.fill();
+            ctx.closePath();
+            ctx.stroke();
+        }
+        function linearFX(p){
+            return 0.225*p + 4.45;
+        }
+     </script> 
+</body>
+</html>

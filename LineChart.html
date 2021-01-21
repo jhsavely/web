@@ -9,23 +9,6 @@ and open the template in the editor.
         <title>Canvas</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            .slidecontainer {
-                width: 100%;
-            }
-
-            .slider {
-                width: 100%;
-            }
-            #blink {
-                font-size: 30px;
-                font-weight: bold;
-                font-family: sans-serif;
-                color: #1c87c9;
-                transition: 0.4s;
-            }
-        </style>
-
     </head>
     <body>
     <center>
@@ -40,11 +23,7 @@ and open the template in the editor.
             id="myCanvas" width="800" height="800" style="border:1px solid #000000;">  
         </canvas>
         <br>
-        <div class="slidecontainer">
-            <p>         </p>
-            <input type="range" min="1" max="100" value="50" class="slider" id="zoomRange">
-            <p id="zoomValue">Zoom value: </p>
-        </div>
+        <p id="coordinates"></p>
         <br>
         <script>
 //=============================================================        
@@ -56,21 +35,30 @@ and open the template in the editor.
             var w = canvas.width;
             var h = canvas.height;
             var mPlot;
-            var slider = document.getElementById("zoomRange");
-            var zv = document.getElementById("zoomValue");
-            var blink = document.getElementById('blink');
-            zv.innerHTML = slider.value;
-            slider.oninput = function () {
-                zv.innerHTML = this.value;
-            }
+            let isDrawing = false;
+            var p1 = 0;
+            var p2 = canvas.width;
+            var X1 = 0;
+            var X2 = 0;
+            const colors = ["red", "yellow", "blue", "skyblue"];
+            document.getElementById("myCanvas").onmousemove = function (event) {
+                mouseMove(event);
+            };
+            document.getElementById("myCanvas").addEventListener('mousedown', (event) => {
+                console.log('mousedown');
+                mousePressed(event);
+            });
+            document.getElementById("myCanvas").addEventListener('mouseup', (event) => {
+                console.log('mouseup');
+                mouseReleased(event);
+            });
             updateData();
 
 
 //==============================================================
 
             function updateData() {
-                ctx.font = "30px Arial";
-                ctx.fillText("Hello Plot", 10, 50);
+                
                 //document.getElementById("printResultsField").innerHTML ;
                 var params = "?dotAmount=" + w + "&min=" + min + "&max=" + max + "";
                 var xmlhttp = new XMLHttpRequest();
@@ -81,11 +69,13 @@ and open the template in the editor.
                         drawPlot(mPlot);
                     }
                 }
-                xmlhttp.open("GET", "http://192.168.0.106:8080/MonteWeb/ChartServlet" + params, true);
+                xmlhttp.open("GET", "http://192.168.0.110:8080/MonteWeb/ChartServlet" + params, true);
                 xmlhttp.send();
             }
 
             function drawGrid(ctx, w, h, step) {
+//                ctx.font = "30px Arial";
+//                ctx.fillText("Hello Plot", 10, 50);
                 //ctx.lineWidth = 1;
                 ctx.strokeStyle = 'rgb(252, 3, 103)';//grid color 
                 ctx.beginPath();
@@ -111,6 +101,7 @@ and open the template in the editor.
                 scaleY = height / (plot.maxY - plot.minY);
                 points = plot["points"];
                 ctx.beginPath();
+                ctx.strokeStyle = "black";
                 ctx.moveTo(points[0]["x"] * scaleX, 400 - points[0]["y"] * scaleY);
                 ctx.lineWidth = 3;
                 for (let i = 0; i < points.length; i++) {
@@ -135,7 +126,47 @@ and open the template in the editor.
                 drawGrid(ctx, w, h, step);
                 drawPlot(mPlot);
             }
-            //canvas.addEventListener("wheel", increase);
+
+
+            function mousePressed(event) {
+                p1 = event.offsetX;
+                isDrawing = true;
+                X1 = linearFX(p1);
+                var coor = "Coordinates: ( p1 = " + p1 + " X1 = " + X1 + ")";
+                document.getElementById("coordinates").innerHTML = coor;
+            }
+
+            function mouseReleased(event) {
+                var p2 = event.offsetX;
+                isDrawing = false;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                //TODO: re-call the servlet data and repainting the plot
+                X2 = linearFX(p2);
+                var coor = "Coordinates: ( p1 = " + p1 + " X1 = " + X1 + " p2 = " + p2 + " X2 = " + X2 + ")";
+                document.getElementById("coordinates").innerHTML = coor;
+                ctx.globalAlpha = 1;
+                min = Math.min(X1,X2);
+                max = Math.max(X1,X2);
+                updateData();
+            }
+
+            function mouseMove(event) {
+
+                if (!isDrawing)
+                    return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawPlot(mPlot);
+                ctx.beginPath();
+                ctx.globalAlpha = 0.2;
+                ctx.fillStyle = "green";
+                ctx.fillRect(p1, 0, event.offsetX - p1, canvas.height);
+                //ctx.closePath();
+                ctx.stroke();
+            }
+            function linearFX(p) {
+                return min + ((max  - min)/canvas.width) * p;
+                //return 0.225 * p + 4.45;
+            }
         </script>
     </center>
 </body>

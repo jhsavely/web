@@ -19,13 +19,13 @@ and open the template in the editor.
         </div>
         <br>
         <p id="printResultsField"></p>
-        <a href="http://192.168.0.106:8080/MonteWeb/LineChart.html">Chart</a> 
+        <a href="http://192.168.0.110:8080/MonteWeb/LineChart.html">Chart</a> 
         <br>
-        <a href="http://192.168.0.106:8080/MonteWeb/ChristmasTree.html">Christmas</a> 
+        <a href="http://192.168.0.110:8080/MonteWeb/ChristmasTree.html">Christmas</a> 
 
         <script src="js/dist/Chart.min.js"></script>
         <script>
-            
+            var server = "http://192.168.0.110:8080/MonteWeb/";
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
@@ -35,7 +35,7 @@ and open the template in the editor.
                 }
                 ;
             };
-            xmlhttp.open("GET", "http://192.168.0.106:8080/MonteWeb/ChartServlet", true);
+            xmlhttp.open("GET", "http://192.168.0.110:8080/MonteWeb/ChartServlet", true);
             xmlhttp.send();
             var chartColors = {
                 red: 'rgb(255, 99, 132)',
